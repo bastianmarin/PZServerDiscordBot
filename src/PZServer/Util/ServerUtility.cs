@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Windows.Forms;
 
 public static class ServerUtility
 {
@@ -87,6 +88,7 @@ public static class ServerUtility
                 ProcessStartInfo startInfo = new ProcessStartInfo(serverFile)
                 {
                     RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
                     UseShellExecute = false
                 };
 
@@ -95,6 +97,8 @@ public static class ServerUtility
                     StartInfo = startInfo
                 };
                 ServerProcess.Start();
+                ServerProcess.BeginOutputReadLine();
+
             }
 
             return ServerProcess;

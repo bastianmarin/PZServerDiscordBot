@@ -4,9 +4,12 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Newtonsoft.Json;
+using PZServerDiscordBot.PZServer;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 public static class Application
 {
@@ -99,6 +102,18 @@ public static class Application
     #if !DEBUG
         ServerUtility.ServerProcess = ServerUtility.Commands.StartServer();
     #endif
+
+        ServerAPI serverAPI = new ServerAPI();
+        ServerUtility.ServerProcess.OutputDataReceived += new DataReceivedEventHandler(
+            (object sender, DataReceivedEventArgs e) =>
+            {
+                if (!string.IsNullOrEmpty(e.Data))
+                {
+                    Console.WriteLine(e.Data);
+                    serverAPI.ProcessOutput(e);
+                }
+            }
+        );
 
         Client   = new DiscordSocketClient(new DiscordSocketConfig() { GatewayIntents = GatewayIntents.All });
         Commands = new CommandService();
